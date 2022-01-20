@@ -83,46 +83,50 @@ void showgroups1(long lent, char *text)
 		str=strtok(NULL,"/");
 	}
 }
-// void showUser(long lent, char *text)
-// {
-// 	char *tptr;
 
-// 	tptr = text;
-// 	printf("%18s %19s %19s\n", "Username", "Feeling", "Sock");
-// 	while (tptr < text + lent)
-// 	{
-// 		char *username, *status, *stt, *sock;
-// 		int st;
+/*
+void showUser(long lent, char *text)
+{
+ 	char *tptr;
 
-// 		username = tptr;
-// 		tptr = username + strlen(username) + 1;
-// 		//printf("%s",username);
-// 		status = tptr;
-// 		tptr = status + strlen(status) + 1;
+ 	tptr = text;
+ 	printf("%18s %19s %19s\n", "Username", "Feeling", "Sock");
+ 	while (tptr < text + lent)
+ 	{
+ 		char *username, *status, *stt, *sock;
+ 		int st;
 
-// 		sock = tptr;
-// 		tptr = sock + strlen(sock) + 1;
+ 		username = tptr;
+ 		tptr = username + strlen(username) + 1;
+ 		//printf("%s",username);
+ 		status = tptr;
+ 		tptr = status + strlen(status) + 1;
 
-		// st = atoi(status);
+ 		sock = tptr;
+ 		tptr = sock + strlen(sock) + 1;
 
-		// switch (st)
-		// {
-		// case 1:
-		// 	strcpy(stt, "Smile");
-		// 	break;
-		// case 2:
-		// 	strcpy(stt, "Sad");
-		// 	break;
-		// case 3:
-		// 	strcpy(stt, "Busy");
-		// 	break;
-		// case 4:
-		// 	strcpy(stt, "Need_Chat");
-		// 	break;
-		// }
-// 		printf("%18s %19s %19s\n", username, stt, sock);
-// 	}
-// }
+		st = atoi(status);
+
+		switch (st)
+		{
+		case 1:
+			strcpy(stt, "Smile");
+		 	break;
+		case 2:
+		 	strcpy(stt, "Sad");
+		 	break;
+		case 3:
+		 	strcpy(stt, "Busy");
+		 	break;
+		case 4:
+		 	strcpy(stt, "Need_Chat");
+			break;
+		}
+ 		printf("%18s %19s %19s\n", username, stt, sock);
+ 	} 
+}
+*/
+
 void showUser1(char *text)
 {
 	char *tptr ;
@@ -700,6 +704,7 @@ int sendCreatRoom(int sock)
 		close(sock);
 		exit(0);
 	}
+	
 	bufrptr1 = strdup(bufr);
 	name = strdup(bufr);
 
@@ -852,7 +857,7 @@ int logout(int sock, int *check)
 	}
 }
 
-/* Các chức năng chính */
+
 int main(int argc, char *argv[])
 {
 	int choiceFunc = 0;
@@ -1573,7 +1578,7 @@ int main(int argc, char *argv[])
 		}
 		else
 		{
-			printf("%sVui nong nhap lai%s\n", KRED, KNRM);
+			printf("%sPlease type again!%s\n", KRED, KNRM);
 			continue;
 		}
 	}
