@@ -980,7 +980,7 @@ int main(int argc, char *argv[])
 							char bufr[MAXPKTLEN],tl[MAXPKTLEN];
 							// snprintf(uname, pkt1_len + 1, "%s", pkt1->text);
 							
-							printf("%sADMIN: You chat with %s'%s'%s 'y' to chat or 'n' to no %s\n", KRED, KBLU, pkt1->text, KRED, KNRM);
+							printf("%sADMIN%s: Do you want to chat with %s'%s' \n%s'y'%s: accept or %s'n'%s: refuse\n", KRED, KNRM, KBLU, pkt1->text, KBLU, KNRM, KRED, KNRM);
 							
 							/* Tiếp tục trò chuyện */
 							
@@ -1116,7 +1116,7 @@ int main(int argc, char *argv[])
 												// uname=strtok(pkt1->text,":");
 												char bufr[MAXPKTLEN],tl[MAXPKTLEN];
 												// snprintf(uname, pkt1_len + 1, "%s", pkt1->text);
-												printf("%sADMIN: You chat with '%s' 'y' to chat or 'n' to no \n", KRED, pkt->text);
+												printf("%sADMIN%s: Do you want to chat with %s'%s' \n%s'y'%s: accept or %s'n'%s: refuse\n", KRED, KNRM, KBLU, pkt1->text, KBLU, KNRM, KRED, KNRM);
 												printf("%s", KNRM);
 												/* Tiếp tục trò chuyện */
 												fgets(bufr, MAXPKTLEN, stdin);
@@ -1128,7 +1128,7 @@ int main(int argc, char *argv[])
 												sendpkt(sock,REQUEST1,strlen(tl)+1,tl);
 												pkt2 = recvpkt(sock);
 												if (pkt2->type == SUCCESS){
-													printf("%sADMIN%s: You chat with '%s' \n", KRED, KNRM, pkt->text);
+													printf("%sADMIN%s: Now, you are chatting with '%s' \n", KRED, KNRM, pkt->text);
 													while (1)
 													{
 														/* Gọi select để theo dõi thông tin bàn phím và máy chủ */
@@ -1323,7 +1323,7 @@ int main(int argc, char *argv[])
 												// uname=strtok(pkt1->text,":");
 												char bufr[MAXPKTLEN],tl[MAXPKTLEN];
 												// snprintf(uname, pkt1_len + 1, "%s", pkt1->text);
-												printf("%sADMIN: You chat with '%s' 'y' to chat or 'n' to no \n", KRED, pkt->text);
+												printf("%sADMIN%s: Do you want to chat with %s'%s' \n%s'y'%s: accept or %s'n'%s: refuse\n", KRED, KNRM, KBLU, pkt1->text, KBLU, KNRM, KRED, KNRM);
 												printf("%s", KNRM);
 												/* Tiếp tục trò chuyện */
 												fgets(bufr, MAXPKTLEN, stdin);
@@ -1335,7 +1335,7 @@ int main(int argc, char *argv[])
 												sendpkt(sock,REQUEST1,strlen(tl)+1,tl);
 												pkt2 = recvpkt(sock);
 												if (pkt2->type == SUCCESS){
-													printf("%sADMIN%s: You chat with '%s' \n", KRED, KNRM, pkt->text);
+													printf("%sADMIN%s: Now, you are chatting with '%s' \n", KRED, KNRM, pkt->text);
 													while (1)
 													{
 														/* Gọi select để theo dõi thông tin bàn phím và máy chủ */

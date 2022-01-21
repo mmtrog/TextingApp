@@ -26,7 +26,7 @@ void readFile()
 	FILE *fp = fopen("users.txt", "r");
 	if (fp == NULL)
 	{
-		printf("Can't open the file!");
+		printf("Can't open the file!\n\n");
 		exit(0);
 	}
 	char user[MAXLEN];
@@ -128,6 +128,8 @@ int findname(char*name){
 		if(strcmp(temp->username,name) == 0){
 			if(temp->state == 1) 
 			m=1;
+			if(temp->state == 2) 
+			m=2;
 		}
 		temp = temp->next;
 
@@ -228,7 +230,7 @@ int initgroups()
 		/* Tên phòng và số ng tối đa */
 		if (fscanf(fp, "%s %d %s", name, &capa, admin) != 3)
 		{
-			printf("error : no info on group %d\n", grid + 1);
+			printf("error : no info on group %d\n\n", grid + 1);
 			return (0);
 		}
 
@@ -422,16 +424,16 @@ int processLogIn(int sock, char *username, char *pass)
 	}
 	if (checkPass(username, pass) == 0)
 	{
-		char *errmsg = "Nah! Password is incorrect!\n";
+		char *errmsg = "Nah! Password is incorrect!";
 		sendpkt(sock, JOIN_REJECTED, strlen(errmsg), errmsg);
 		return 0;
 	}
-	char *succmsg = "Yup! Log in successful!\n";
+	char *succmsg = "Yup! Log in successful!";
 	current[sock] = checkExist(username);
 	current[sock]->state = 1;
 	current[sock]->sock = sock;
 	sendpkt(sock, SUCCESS, strlen(succmsg), succmsg);
-	printf("%d\n", sock);
+	printf("Logged in from 'localhost' at '%d'\n\n", sock);
 	return 1;
 }
 
@@ -460,7 +462,7 @@ int processRegister(int sock, char *username, char *pass)
 
 int processCreatRoom(int sock, char *name, char *cap)
 {
-	printf("OK 1\n");
+	
 
 	if (checkExistRoom(name) != NULL)
 	{
@@ -469,12 +471,12 @@ int processCreatRoom(int sock, char *name, char *cap)
 		return 0;
 	}
 
-	printf("OK 2\n");
+	
 	
 	
 	addNodeRoom(name, cap,current[sock]->username);
 
-	printf("OK 3\n");
+	
 
 	writeRoomFile(ngroups + 1);
 	//printf("%d\n",ngroups);
@@ -486,7 +488,7 @@ int processCreatRoom(int sock, char *name, char *cap)
 	group[ngroups - 1].admin = strdup(current[sock]->username);
 	group[ngroups - 1].mems = NULL;
 
-	printf("OK 4\n");
+	
 
 	//printf("%s\n",group[ngroups-1].name);
 	char *succmsg = "Create successful!\n";
@@ -540,6 +542,8 @@ int processLogout(int sock, char *username)
 	char *succmsg = "See you again!\nLog out successful!\n";
 	sendpkt(sock, SUCCESS, strlen(succmsg), succmsg);
 
+	printf("%s logged out\n\n", username);
+
 	return 1;
 }
 
@@ -585,11 +589,11 @@ int joingroup(int sock, char *gname, char *username)
 	memb = (Member *)calloc(1, sizeof(Member));
 	if (!memb)
 	{
-		printf("error : unable to calloc\n");
+		printf("Error : unable to calloc\n");
 		// cleanup();
 	}
 	memb->name = strdup(username);
-	printf("%s , %s\n", memb->name,username);
+	//printf("%s , %s\n", memb->name,username);
 	memb->sock = sock;
 	memb->grid = grid;
 	memb->prev = NULL;
@@ -599,12 +603,12 @@ int joingroup(int sock, char *gname, char *username)
 		group[grid].mems->prev = memb;
 	}
 	group[grid].mems = memb;
-	printf("admin: '%s' joined '%s'\n", username, gname);
+	printf("'%s' joined '%s' at ", username, gname);
 
 	/* Cập nhật phòng chat trực tuyến */
 	group[grid].occu++;
 	// current[sock]->state = 0;
-	printf("%d\n", current[sock]->sock);
+	printf("'%d'\n", current[sock]->sock);
 	sendpkt(sock, JOIN_ACCEPTED, 0, NULL); /* Gửi và nhận tin nhắn thành viên */
 	fflush(stdin);
 	return (1);
@@ -656,9 +660,9 @@ int findbysock(int a){
 }
 
 int findother(int a){
-	printf("input other sock %d\n", a);
+	//printf("input other sock %d\n", a);
 	int m;
-	printf("head here %d - %d\n", head->ID, head->sock);
+	//printf("head here %d - %d\n", head->ID, head->sock);
 	node *temp = head;
 	
 	while(temp!=NULL){
@@ -685,39 +689,59 @@ int changeStatus(char *name)
 	
 }
 
-int join11(int sock, char *uname, char *username)
+int changeStatus2(char *name)
+{
+	node *temp = head;
+	while(temp!=NULL)
+	{
+		if(strcmp(temp->username,name)==0) {
+		temp->state = 2;
+		//printf("%s", temp->username);
+		}
+		temp = temp-> next;
+	}
+	
+}
+
+int join11(int sock, char *user2, char *user1)
 {
 	int m=0,n;
 	node *cur1,*cur2;
 	/* Không thể tự chat với bản thân */
-	//try(uname);
-	printf("%s   %s",uname,"abc");
-	if(strcmp(current[sock]->username,uname)==0)
+	//try(user2);
+	printf("%s ",user1);
+	if(strcmp(current[sock]->username,user2)==0)
 	{
-		char *errmsg = "Can't talk with my self";
+		char *errmsg = "Can't talk with yourself!!!";
 		sendpkt(sock, JOIN_REJECTED, strlen(errmsg), errmsg); /* gửi tin nhắn từ chối tham gia */
 		return (0);
 	}
-	if(!findname(uname))
+	if(findname(user2) == 0)
 	{
-		char *errmsg = "This user isn't online!";
+		char *errmsg = "This user isn't online!!!";
 		sendpkt(sock, JOIN_REJECTED, strlen(errmsg), errmsg);
 		return (0);
 	}
-	printf("start new chat1v1 %s - %s\n", username, uname);
+	if(findname(user2) == 2)
+	{
+		char *errmsg = "This user isn't ready to chat with you!!!";
+		sendpkt(sock, JOIN_REJECTED, strlen(errmsg), errmsg);
+		return (0);
+	}
+	printf("Start new chat 1v1 with %s\n\n", user2);
 
-	try1(username);
-	try1(uname);
+	try1(user1);
+	try1(user2);
 	sl++;
-	printf("send initial pkt to %s from %s - len %zd\n", uname, current[sock]->username, strlen(current[sock]->username));
-	sendpkt(try(uname),REQUEST,strlen(current[sock]->username)+1,current[sock]->username);	
-	printf("send join accepted pkt to %s\n", uname);
+	printf("Send initial pkt to %s from %s - len %zd\n\n", user2, current[sock]->username, strlen(current[sock]->username));
+	sendpkt(try(user2),REQUEST,strlen(current[sock]->username)+1,current[sock]->username);	
+	printf("Send join accepted pkt to %s\n\n", user2);
 	// sendpkt(sock, JOIN_ACCEPTED, 0, NULL);
-	// printf("sent join accepted pkt to %s\n", uname);
-	// changeStatus(uname);
-	// changeStatus(username);
-	// fflush(stdin);
-	printf("flushed stdin %s\n", uname);
+	// printf("sent join accepted pkt to %s\n", user2);
+	changeStatus2(user2);
+	changeStatus2(user1);
+	fflush(stdin);
+	// printf("flushed stdin %s\n", user2);
 	return (1);
 }
 
@@ -730,6 +754,8 @@ int changeStatus1(int sock)
 		temp = temp-> next;
 	}
 }
+
+
 
 int leave11(int sock){
 	changeStatus1(sock);
@@ -759,7 +785,7 @@ int leavegroup(int sock)
 	else
 		memb->prev->next = memb->next; /*Ở giữa ds*/
 
-	printf("admin: '%s' left '%s'\n",
+	printf("'%s' left '%s'\n\n",
 		   temp->username, group[memb->grid].name);
 
 	/*Cập nhật chia sẻ phòng chat*/
@@ -795,13 +821,13 @@ int kickuser(int sock, char *text){
 	temp = findnamebysock(sock);
 	if (!sender)
 	{
-		printf("strange: no member at %d\n", sock);
+		printf("No member at %d\n\n", sock);
 		return (0);
 	}
 	admin=group[sender->grid].admin;
 	printf("%s %s\n",admin,current[sock]->username);
 	if (strcmp(admin,current[sock]->username)!=0){
-		char *errmsg = "you are not admin";
+		char *errmsg = "You are not admin!";
 		sendpkt(sock, KICK, strlen(errmsg)+1, errmsg);
 	} else {
 		int d=0;
@@ -816,10 +842,10 @@ int kickuser(int sock, char *text){
 				} 
 			}
 		if (d==1){
-			char *errmsg = "kick success";
+			char *errmsg = "Kick success!";
 			sendpkt(sock, KICK, strlen(errmsg)+1, errmsg);
 		} else {
-			char *errmsg = "not user";
+			char *errmsg = "Not user!";
 			sendpkt(sock, KICK, strlen(errmsg)+1, errmsg);
 		}
 
@@ -869,7 +895,7 @@ int givemsg(int sock, char *text){
 	strcpy(bufrptr, text);
 	bufrptr += strlen(bufrptr) + 1;
 	bufrlen = bufrptr - pktbufr;
-	printf("other sock %d\n", findother(sock));
+	printf("Other sock %d\n\n", findother(sock));
 	sendpkt(findother(sock),USER_TEXT1, bufrlen,pktbufr);
 	printf("%s", pktbufr);
 	/* Truyên tin nhắn đến các thành viên khác trong phòng*/
@@ -892,7 +918,7 @@ int toUser(int sock, char *text)
 	temp = findnamebysock(sock);
 	if (!sender)
 	{
-		printf("strange: no member at %d\n", sock);
+		printf("No member at %d\n\n", sock);
 		return (0);
 	}
 	//temp = findnamebysock(sock);
@@ -942,7 +968,7 @@ int relaymsg(int sock, char *text)
 	temp = findnamebysock(sock);
 	if (!sender)
 	{
-		printf("strange: no member at %d\n", sock);
+		printf("No member at %d\n\n", sock);
 		return (0);
 	}
 	//temp = findnamebysock(sock);
@@ -988,7 +1014,7 @@ int main(int argc, char *argv[])
 	/*Check cú pháp */
 	if (argc != 2)
 	{
-		printf("Wrong syntax!!!\n--> Correct Syntax: ./server PortNumber\n");
+		printf("Wrong syntax!!!\n--> Correct Syntax: ./server PortNumber\n\n");
 		return 0;
 	}
 
@@ -1055,9 +1081,9 @@ int main(int argc, char *argv[])
 						clientname = he->h_name;
 					}
 					else
-						printf("Cannot get peer name/n");
+						printf("Cannot get peer name\n\n");
 
-					printf("admin: disconnect from '%s' at '%d'\n",
+					printf("Disconnect from '%s' at '%d'\n\n",
 						   clientname, sock);
 
 					/* Xóa thành viên khỏi phòng trò chuyện */
@@ -1094,7 +1120,7 @@ int main(int argc, char *argv[])
 						processCreatRoom(sock, name, cap);
 						break;
 					case UPDATE:
-						printf("a");
+						//printf("a");
 						name = pkt->text;
 						Update(sock, name, current[sock]->username);
 						break;
@@ -1200,7 +1226,7 @@ int main(int argc, char *argv[])
 				if (h != (struct hostent *)0)
 					clientname = h->h_name;
 				else
-					printf("gethostbyaddr failed\n");
+					printf("Gethostbyaddr failed\n\n");
 
 				/* Hiển thị tên máy chủ của máy khách và bộ mô tả ổ cắm tương ứng  */
 				printf("admin: connect from '%s' at '%d'\n",

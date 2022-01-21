@@ -3,7 +3,7 @@
 
 void menu();
 void all_emotion();
-void chatroomFunction();
+void chatFunction();
 void menuhelp();
 
 #endif
