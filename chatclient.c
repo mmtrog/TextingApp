@@ -87,7 +87,7 @@ void showgroups1(long lent, char *text)
 /*
 void showUser(long lent, char *text)
 {
- 	char *tptr;
+ 	//char *tptr;
 
  	tptr = text;
  	printf("%18s %19s %19s\n", "Username", "Feeling", "Sock");
